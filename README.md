@@ -6,6 +6,7 @@ The demo does not require API keys. It ships with deterministic mock AI so it ca
 
 ## What It Demonstrates
 
+- User-facing web dashboard for running and comparing automation results.
 - Shopify webhook parsing and HMAC verification helper.
 - Local RAG over store policies, VIP rules, inventory rules, and fraud review rules.
 - Multi-agent orchestration:
@@ -21,8 +22,19 @@ The demo does not require API keys. It ships with deterministic mock AI so it ca
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
-python -m pip install -e .
-python -m shopify_ai_automation.cli
+python -m pip install -r requirements.txt
+uvicorn shopify_ai_automation.api:app --reload
+```
+
+Open the website:
+
+```text
+http://127.0.0.1:8000
+```
+
+Run tests:
+
+```bash
 python -m unittest discover -s tests
 ```
 
@@ -30,6 +42,12 @@ On macOS/Linux, activate the virtual environment with:
 
 ```bash
 source .venv/bin/activate
+```
+
+CLI mode is still available:
+
+```bash
+python -m shopify_ai_automation.cli --provider mock --score
 ```
 
 ## Optional Sarvam Comparison
@@ -57,14 +75,9 @@ Live comparison on the sample order:
 
 Sarvam produced the stronger result because it generated a ready-to-send support reply that named the customer, acknowledged the damaged item, asked for photo/order evidence, mentioned refund or replacement, and avoided auto-approving the refund.
 
-## Optional FastAPI Demo
+## Optional Shopify Webhook Endpoint
 
-```bash
-python -m pip install -e .[api]
-uvicorn shopify_ai_automation.api:app --reload
-```
-
-Then post a Shopify-like order payload to:
+Post a Shopify-like order payload to:
 
 ```text
 POST http://127.0.0.1:8000/webhooks/shopify/orders-create
@@ -72,13 +85,35 @@ POST http://127.0.0.1:8000/webhooks/shopify/orders-create
 
 If `SHOPIFY_WEBHOOK_SECRET` is set, the endpoint validates `X-Shopify-Hmac-Sha256`. If it is not set, the endpoint runs in local demo mode.
 
+## Render Deployment
+
+This repo includes `render.yaml` and `requirements.txt`.
+
+Render settings:
+
+```text
+Build command: pip install -r requirements.txt
+Start command: uvicorn shopify_ai_automation.api:app --host 0.0.0.0 --port $PORT
+```
+
+Environment variables:
+
+```text
+AI_PROVIDER=mock
+SARVAM_MODEL=sarvam-105b
+SARVAM_API_KEY=your_rotated_key_here
+SHOPIFY_WEBHOOK_SECRET=your_shopify_webhook_secret
+```
+
+Do not put API keys in GitHub. Add them only in Render's environment variable panel.
+
 ## Repository Map
 
 ```text
 src/shopify_ai_automation/
   agents.py          Specialist agents for support, inventory, marketing, risk
   ai.py              Offline mock AI engine and optional Sarvam adapter
-  api.py             Optional FastAPI webhook endpoint
+  api.py             ASGI website, API routes, and Shopify webhook endpoint
   cli.py             Offline CLI demo
   orchestrator.py    Workflow coordinator
   rag.py             Local lexical RAG index
@@ -92,6 +127,10 @@ docs/
   architecture.md    Workflow diagram and scaling notes
 tests/
   test_*.py          Unit tests
+web/
+  index.html         Browser dashboard
+  app.js             Frontend API interactions
+  styles.css         Responsive dashboard styling
 ```
 
 ## Architecture

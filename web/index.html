@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shopify AI Automation</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Shopify AI Automation</p>
+        <h1>Order operations cockpit</h1>
+      </div>
+      <div class="status-pill" id="healthStatus">Checking service</div>
+    </header>
+
+    <main class="app-shell">
+      <section class="workspace">
+        <div class="toolbar">
+          <div class="segmented" role="group" aria-label="AI provider">
+            <button class="segment active" data-provider="mock" type="button">Mock</button>
+            <button class="segment" data-provider="sarvam" type="button">Sarvam</button>
+          </div>
+          <button class="primary-button" id="runButton" type="button">
+            <span class="button-icon">▶</span>
+            Run automation
+          </button>
+          <button class="ghost-button" id="compareButton" type="button">
+            <span class="button-icon">⇄</span>
+            Compare
+          </button>
+        </div>
+
+        <div class="metrics-grid">
+          <article class="metric">
+            <span class="metric-label">Actions</span>
+            <strong id="metricActions">0</strong>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Quality</span>
+            <strong id="metricQuality">0</strong>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Minutes saved</span>
+            <strong id="metricSavings">0</strong>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Provider</span>
+            <strong id="metricProvider">Mock</strong>
+          </article>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Automation result</p>
+              <h2 id="summaryTitle">Ready to run</h2>
+            </div>
+            <span class="small-badge" id="resultBadge">sample order</span>
+          </div>
+          <div class="actions-list" id="actionsList"></div>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <section class="panel compact">
+          <p class="eyebrow">Sample order</p>
+          <h2 id="customerName">Loading</h2>
+          <dl class="order-facts">
+            <div>
+              <dt>Total</dt>
+              <dd id="orderTotal">-</dd>
+            </div>
+            <div>
+              <dt>Customer orders</dt>
+              <dd id="customerOrders">-</dd>
+            </div>
+            <div>
+              <dt>Items</dt>
+              <dd id="orderItems">-</dd>
+            </div>
+          </dl>
+          <p class="note" id="orderNote"></p>
+        </section>
+
+        <section class="panel compact">
+          <p class="eyebrow">Provider comparison</p>
+          <div class="comparison-table" id="comparisonTable">
+            <div class="empty-state">Run comparison to score mock vs Sarvam.</div>
+          </div>
+        </section>
+
+        <section class="panel compact">
+          <p class="eyebrow">Production path</p>
+          <ul class="checklist">
+            <li>Shopify webhook intake</li>
+            <li>Policy RAG retrieval</li>
+            <li>AI-drafted actions</li>
+            <li>Human approval queue</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+
+    <template id="actionTemplate">
+      <article class="action-card">
+        <div class="action-card-header">
+          <span class="action-type"></span>
+          <span class="priority"></span>
+        </div>
+        <h3></h3>
+        <p></p>
+        <div class="evidence"></div>
+      </article>
+    </template>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
