@@ -4,6 +4,10 @@ Offline-first prototype for a Shopify/eCommerce automation system that uses a sm
 
 The demo does not require API keys. It ships with deterministic mock AI so it can be tested anywhere. A Sarvam adapter is also available for live comparison when `SARVAM_API_KEY` is set.
 
+## Demo
+
+https://shopify-ai-automation.onrender.com/
+
 ## What It Demonstrates
 
 - User-facing web dashboard for running and comparing automation results.
