@@ -1,0 +1,72 @@
+{
+  "actions": [
+    {
+      "action_type": "draft_reply",
+      "body": "Draft reply for Riya Mehta: acknowledge the issue, reference Returns And Refunds, Shipping Delays, VIP Customers, Inventory Rules, and offer a clear next step.",
+      "confidence": 0.86,
+      "evidence": [
+        "Returns And Refunds",
+        "Shipping Delays",
+        "VIP Customers",
+        "Inventory Rules"
+      ],
+      "metadata": {
+        "tone": "empathetic"
+      },
+      "owner": "support-agent",
+      "priority": "high",
+      "title": "Customer support draft"
+    },
+    {
+      "action_type": "inventory_alert",
+      "body": "Blue Ceramic Mug will drop to 2 units after this order. Reorder point is 5.",
+      "confidence": 0.98,
+      "evidence": [
+        "stock=4",
+        "reorder_point=5"
+      ],
+      "metadata": {
+        "projected_stock": 2,
+        "sku": "MUG-BLUE-12OZ"
+      },
+      "owner": "inventory-agent",
+      "priority": "high",
+      "title": "Reorder MUG-BLUE-12OZ"
+    },
+    {
+      "action_type": "inventory_alert",
+      "body": "Canvas Tote Bag will drop to 10 units after this order. Reorder point is 10.",
+      "confidence": 0.98,
+      "evidence": [
+        "stock=11",
+        "reorder_point=10"
+      ],
+      "metadata": {
+        "projected_stock": 10,
+        "sku": "BAG-CANVAS"
+      },
+      "owner": "inventory-agent",
+      "priority": "high",
+      "title": "Reorder BAG-CANVAS"
+    },
+    {
+      "action_type": "marketing_offer",
+      "body": "Send a loyalty email to riya@example.com with care tips for Blue Ceramic Mug, Canvas Tote Bag and a 10 percent accessory offer.",
+      "confidence": 0.82,
+      "evidence": [
+        "repeat_customer",
+        "order_value_threshold"
+      ],
+      "metadata": {
+        "customer_orders": 5
+      },
+      "owner": "marketing-agent",
+      "priority": "medium",
+      "title": "Post-purchase retention offer"
+    }
+  ],
+  "estimated_savings_minutes": 24,
+  "event_id": "1045001",
+  "summary": "orders/create for Riya Mehta: 3 items, USD 126.50, 4 recommended actions.",
+  "topic": "orders/create"
+}

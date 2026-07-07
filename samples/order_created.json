@@ -1,0 +1,28 @@
+{
+  "id": 1045001,
+  "email": "riya@example.com",
+  "currency": "USD",
+  "total_price": "126.50",
+  "note": "Customer says the previous mug arrived damaged and asks if a refund or replacement is possible.",
+  "customer": {
+    "first_name": "Riya",
+    "last_name": "Mehta",
+    "email": "riya@example.com",
+    "orders_count": 5,
+    "tags": "vip, newsletter"
+  },
+  "line_items": [
+    {
+      "sku": "MUG-BLUE-12OZ",
+      "title": "Blue Ceramic Mug",
+      "quantity": 2,
+      "price": "18.00"
+    },
+    {
+      "sku": "BAG-CANVAS",
+      "title": "Canvas Tote Bag",
+      "quantity": 1,
+      "price": "22.50"
+    }
+  ]
+}

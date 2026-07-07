@@ -1,0 +1,17 @@
+{
+  "MUG-BLUE-12OZ": {
+    "title": "Blue Ceramic Mug",
+    "stock": 4,
+    "reorder_point": 5
+  },
+  "TEE-BLK-M": {
+    "title": "Black Logo Tee",
+    "stock": 28,
+    "reorder_point": 8
+  },
+  "BAG-CANVAS": {
+    "title": "Canvas Tote Bag",
+    "stock": 11,
+    "reorder_point": 10
+  }
+}
