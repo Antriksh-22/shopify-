@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -24,12 +25,31 @@ class SupportAgent:
         if not any(word in note for word in ["refund", "return", "late", "delay", "damaged"]):
             return []
 
-        model_view = self.ai.complete_json("Classify customer support tone.", event.note)
+        support_prompt = json.dumps(
+            {
+                "customer_name": event.customer.name,
+                "customer_email": event.customer.email,
+                "topic": event.topic,
+                "order_total": event.total_price,
+                "currency": event.currency,
+                "customer_note": event.note,
+                "line_items": [item.title for item in event.line_items],
+                "policy_context": [{"title": item.title, "text": item.text} for item in context],
+                "task": (
+                    "Draft a concise, ready-to-send support reply. Acknowledge the issue, "
+                    "ask for any required evidence, explain the next step, and do not approve "
+                    "refunds automatically."
+                ),
+            },
+            sort_keys=True,
+        )
+        model_view = self.ai.complete_json("Create a Shopify customer support action.", support_prompt)
         policy_titles = [item.title for item in context]
         body = (
             f"Draft reply for {event.customer.name}: acknowledge the issue, reference "
             f"{', '.join(policy_titles) or 'store policy'}, and offer a clear next step."
         )
+        body = str(model_view.get("draft_reply") or body)
         return [
             AutomationAction(
                 action_type="draft_reply",
@@ -39,7 +59,7 @@ class SupportAgent:
                 confidence=float(model_view["confidence"]),
                 owner=self.name,
                 evidence=policy_titles,
-                metadata={"tone": model_view["summary_style"]},
+                metadata={"tone": model_view["summary_style"], "rationale": model_view.get("rationale", "")},
             )
         ]
 
@@ -117,12 +137,26 @@ class RiskAgent:
         if not signals:
             return []
 
-        model_view = self.ai.complete_json("Assess ecommerce operational risk.", event.note)
+        model_view = self.ai.complete_json(
+            "Assess ecommerce operational risk.",
+            json.dumps(
+                {
+                    "customer_note": event.note,
+                    "total_price": event.total_price,
+                    "customer_total_orders": event.customer.total_orders,
+                    "signals": signals,
+                },
+                sort_keys=True,
+            ),
+        )
         return [
             AutomationAction(
                 action_type="fraud_review",
                 title="Manual review recommended",
-                body="Hold fulfillment until payment, address, and customer history are reviewed.",
+                body=str(
+                    model_view.get("review_note")
+                    or "Hold fulfillment until payment, address, and customer history are reviewed."
+                ),
                 priority="urgent" if model_view["risk"] == "high" else "high",
                 confidence=float(model_view["confidence"]),
                 owner=self.name,

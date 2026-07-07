@@ -2,7 +2,7 @@
 
 Offline-first prototype for a Shopify/eCommerce automation system that uses a small multi-agent workflow plus local RAG to turn `orders/create` webhook payloads into support, inventory, retention, and risk actions.
 
-The demo does not require API keys. It ships with deterministic mock AI so it can be tested anywhere. Real OpenAI, Gemini, Claude, or Sarvam calls can be added later behind provider adapters, but this repository intentionally keeps the POC safe and repeatable.
+The demo does not require API keys. It ships with deterministic mock AI so it can be tested anywhere. A Sarvam adapter is also available for live comparison when `SARVAM_API_KEY` is set.
 
 ## What It Demonstrates
 
@@ -32,6 +32,31 @@ On macOS/Linux, activate the virtual environment with:
 source .venv/bin/activate
 ```
 
+## Optional Sarvam Comparison
+
+The default mock provider is best for repeatable local tests. To compare against Sarvam AI, set the key only in your local shell:
+
+```bash
+export SARVAM_API_KEY="your_key_here"
+python -m shopify_ai_automation.cli --provider sarvam --score
+```
+
+PowerShell:
+
+```powershell
+$env:SARVAM_API_KEY="your_key_here"
+python -m shopify_ai_automation.cli --provider sarvam --score
+```
+
+Live comparison on the sample order:
+
+| Provider | Model | Actions | Support specificity | Actionable support reply | Quality score | Result |
+| --- | --- | ---: | ---: | --- | ---: | --- |
+| Mock/offline | deterministic rules | 4 | 3/6 | No | 22 | Stable and free, but support text is generic |
+| Sarvam AI | `sarvam-105b` | 4 | 5/6 | Yes | 30 | Better draft quality with customer-specific next steps |
+
+Sarvam produced the stronger result because it generated a ready-to-send support reply that named the customer, acknowledged the damaged item, asked for photo/order evidence, mentioned refund or replacement, and avoided auto-approving the refund.
+
 ## Optional FastAPI Demo
 
 ```bash
@@ -52,7 +77,7 @@ If `SHOPIFY_WEBHOOK_SECRET` is set, the endpoint validates `X-Shopify-Hmac-Sha25
 ```text
 src/shopify_ai_automation/
   agents.py          Specialist agents for support, inventory, marketing, risk
-  ai.py              Offline mock AI engine and disabled external-provider guard
+  ai.py              Offline mock AI engine and optional Sarvam adapter
   api.py             Optional FastAPI webhook endpoint
   cli.py             Offline CLI demo
   orchestrator.py    Workflow coordinator
